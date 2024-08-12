@@ -5,9 +5,17 @@
 ; ==========================
 
 section .data
+    ;Welcome agent. What do you want to do, Encrypt [1] or Decrypt [2]? is our message
     ; ==========================
-    ; Your data goes here
+  
+   ; Your data goes here
+
+
+
+
+
     ; ==========================
+
 
 section .text
     global greeting
