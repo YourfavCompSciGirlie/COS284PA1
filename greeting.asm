@@ -7,6 +7,8 @@
 section .data
     ; ==========================
     ; Your data goes here
+    welcome_message db "Welcome agent. What do you want to do, Encrypt [1] or Decrypt [2]?", 0xA
+    welcome_len equ $ - welcome_message  ; Calculate length of the message
     ; ==========================
 
 section .text
@@ -15,7 +17,12 @@ section .text
 greeting:
     ; Do not modify anything above this line unless you know what you are doing
     ; ==========================
-    ; Your code goes here
+    ; Print the welcome message to the console
+    mov rax, 1                ; syscall number for sys_write
+    mov rdi, 1                ; file descriptor 1 is stdout
+    mov rsi, welcome_message  ; pointer to the message
+    mov rdx, welcome_len      ; length of the message
+    syscall                   ; call the kernel
     ; ==========================
     ; Do not modify anything below this line unless you know what you are doing
 
