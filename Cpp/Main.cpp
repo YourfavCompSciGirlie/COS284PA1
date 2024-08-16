@@ -39,12 +39,11 @@ void encrypt_and_print(const char *input)
 
    const unsigned int  exclusive = 0x73113777;
     unsigned int result2;
-    // bits of each of each character have to be rotated left by 4 bits:
     cout<<"The cipher text is: ";
     for (int i = 0; input[i] != '\0'; i++)
     {
         char c = input[i];
-       unsigned int result = (c << 4) & 0xFF;
+       unsigned int result = (c << 4);
       result2 = result ^ exclusive;
        cout << result2<<" ";
     }
@@ -70,8 +69,6 @@ void decrypt_and_print(int num1 , int num2 , int num3 , int num4 )
 
 
 }
-
-
 
 void testAll()
 {
