@@ -1,15 +1,11 @@
 ; ==========================
-; Group member 01: Name_Surname_student-nr
-; Group member 02: Lebogang Masenya u23535246
-; Group member 03:  Mpho Siminya u21824241
+; Group member 01: Yohali Malaika Kamangu u23618583
+; Group member 02: Amantle Temo u23539764
+; Group member 03: Aundrea Ncube u22747363
 ; ==========================
 
 section .data
-    fmt db "%d", 0  ; Format string for printing integers
-    ; Do not modify anything above this line unless you know what you are doing
-    ; ==========================
-
-
+    fmt db "%d ", 0  ; Format string for printing integers with a space
     msg db "Enter plaintext to encrypt: ", 0
     msg_len equ $ - msg
     
@@ -18,19 +14,14 @@ section .data
 
     exclusive dd 0x73113777  ; XOR value
 
-    space db ''.
-    ; ==========================
-
 section .bss
-    user_input resb 4  
+    user_input resb 4  ; Reserve 4 bytes for user input
 
-    ; ==========================
 section .text
     global encrypt_and_print
     extern printf
 
-
-;When using the below function, be sure to place whatever you want to print in the rax register first
+; Function to print a 32-bit integer
 print_int_32:
     mov rsi, rax
     mov rdi, fmt
@@ -39,10 +30,6 @@ print_int_32:
     ret
 
 encrypt_and_print:
-    ; Do not modify anything above this line unless you know what you are doing
-    ; ==========================
-
-
     ; Print "Enter plaintext to encrypt:"
     mov rax, 1
     mov rdi, 1
@@ -64,73 +51,37 @@ encrypt_and_print:
     mov rdx, msg_len2
     syscall
 
-    xor ecx, ecx  ; i = 0
-encrypt:
-   
-    movzx rbx, byte [user_input]  ; Load one byte
-    rol rbx, 4                       ; Rotate left by 4 bits
-    mov eax, dword [exclusive]  ; XOR with exclusive value
-    xor ebx, eax
-    ; Print the encrypted value
+    ; Encrypt first character
+    movzx rbx, byte [user_input]       ; Load first byte
+    rol rbx, 4                         ; Rotate left by 4 bits
+    mov eax, dword [exclusive]         ; Load XOR value
+    xor ebx, eax                       ; Apply XOR operation
     mov rax, rbx
     call print_int_32
-    ; Add space after encryption
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [space]
-    mov rdx, 1
-    syscall
-    jmp encrypt_
 
-encrypt_:
-    movzx rbx, byte [user_input+2]  
-    rol rbx, 4                       
+    ; Encrypt second character
+    movzx rbx, byte [user_input+1]     ; Load second byte
+    rol rbx, 4
     mov eax, dword [exclusive]
     xor ebx, eax
-    ; Print the encrypted value
     mov rax, rbx
     call print_int_32
-    ; Add space after encryption
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [space]
-    mov rdx, 1
-    syscall
-    jmp encrypt_third
 
-encrypt_third:
-    movzx rbx, byte [user_input+3] 
-    rol rbx, 4                       
-    mov eax, dword [exclusive] 
+    ; Encrypt third character
+    movzx rbx, byte [user_input+2]     ; Load third byte
+    rol rbx, 4
+    mov eax, dword [exclusive]
     xor ebx, eax
-    ; Print the encrypted value
     mov rax, rbx
     call print_int_32
-    ; Add space after encryption
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [space]
-    mov rdx, 1
-    syscall
-    jmp encrypt_fourth
 
-encrypt_fourth:
-    movzx rbx, byte [user_input+4] 
-    rol rbx, 4                      
-    mov eax, dword [exclusive] 
+    ; Encrypt fourth character
+    movzx rbx, byte [user_input+3]     ; Load fourth byte
+    rol rbx, 4
+    mov eax, dword [exclusive]
     xor ebx, eax
-    ; Print the encrypted value
     mov rax, rbx
     call print_int_32
-    ; Add space after encryption
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [space]
-    mov rdx, 1
-    syscall
-    jmp complete
 
-complete:
-    ; Do not modify anything above this line unless you know what you are doing
-    ; ==========================
     ret
+
