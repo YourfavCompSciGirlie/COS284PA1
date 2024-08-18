@@ -6,6 +6,9 @@
 
 section .data
     fmt db "%d ", 0  ; Format string for printing integers with a space
+    ; Do not modify anything above this line unless you know what you are doing
+    ; ==========================
+    ; Your data goes here
     msg db "Enter plaintext to encrypt: ", 0
     msg_len equ $ - msg
     
@@ -13,14 +16,19 @@ section .data
     msg_len2 equ $ - message
 
     exclusive dd 0x73113777  ; XOR value
+    ; ==========================
 
 section .bss
+    ; ==========================
+    ; Your data goes here
     user_input resb 4  ; Reserve 4 bytes for user input
+    ; ==========================
 
 section .text
     global encrypt_and_print
     extern printf
 
+; When using the below function, be sure to place whatever you want to print in the rax register first
 ; Function to print a 32-bit integer
 print_int_32:
     mov rsi, rax
@@ -30,6 +38,9 @@ print_int_32:
     ret
 
 encrypt_and_print:
+    ; Do not modify anything above this line unless you know what you are doing
+    ; ==========================
+    ; Your code goes here
     ; Print "Enter plaintext to encrypt:"
     mov rax, 1
     mov rdi, 1
@@ -82,6 +93,7 @@ encrypt_and_print:
     xor ebx, eax
     mov rax, rbx
     call print_int_32
+    ; ==========================
+    ; Do not modify anything below this line unless you know what you are doing
 
     ret
-
