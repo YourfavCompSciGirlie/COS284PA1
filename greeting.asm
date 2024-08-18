@@ -5,13 +5,11 @@
 ; ==========================
 
 section .data
-    ;Welcome agent. What do you want to do, Encrypt [1] or Decrypt [2]? is our message
     ; ==========================
     ; Your data goes here
     welcome_message db "Welcome agent. What do you want to do, Encrypt [1] or Decrypt [2]?", 0xA
     welcome_len equ $ - welcome_message  ; Calculate length of the message
     ; ==========================
-
 
 section .text
     global greeting
