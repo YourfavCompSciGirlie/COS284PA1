@@ -3,23 +3,24 @@
 ; Group member 02: Amantle Temo u23539764
 ; Group member 03: Aundrea Ncube u22747363
 ; ==========================
+
 section .data
-    fmt db "%c", 0
-    ; Do not modify anything above this line unless you know what you are doing.
-    ; ==========================
+    fmt db "%c", 0             ; Format string for printing characters
+    intro_msg db "Enter cipher text to decrypt: ", 0 ; Introduction message
+    intro_msg_len equ $ - intro_msg ; Length of the introduction message
+    result_msg db "The plaintext is: ", 0 ; Result message
+    result_msg_len equ $ - result_msg ; Length of the result message
+    xor_key dd 0x73113777      ; XOR key for decryption
 
-    test_string db "the plaintext is: ", 0
-    len equ $ -test_string
-
-    exclusive dd 0x73113777
-    input db 4, 0  
-    ; ==========================
+section .bss
+    buffer resb 4              ; Reserve 4 bytes for the buffer
 
 section .text
-    global decrypt_and_print
-    extern printf
-;When using the below function, be sure to place whatever you want to print in the rax register first
-print_char_32:
+global decrypt_and_print
+extern printf
+
+; Function to print a single character
+print_single_char:
     mov rsi, rax
     mov rdi, fmt
     xor rax, rax
@@ -27,45 +28,54 @@ print_char_32:
     ret
 
 decrypt_and_print:
-    ; Do not modify anything above this line unless you know what you are doing
-    ; ==========================
-    mov r8, rdi
-    mov r9, rsi
-    mov r10, rdx
-    mov r11, rcx
+    ; Save the original registers
+    mov r15, rdi
+    mov r14, rsi
+    mov r13, rdx
+    mov r12, rcx
 
- 
-    ror r8d, 4
-    xor r8d, [exclusive]
-    mov byte [input], r8b  ; Store first input character
+    ; Print "Decrypting text: "
+    mov rax, 1               ; syscall for write
+    mov rdi, 1               ; stdout handle
+    mov rsi, intro_msg       ; Pointer to intro message
+    mov rdx, intro_msg_len   ; Length of the message
+    syscall
 
-    ror r9d, 4
-    xor r9d, [exclusive]
-    mov byte [input+1], r9b  ; Store second input character
+    ; Read the cipher text
+    mov rax, 0               ; syscall for read
+    mov rdi, 0               ; stdin handle
+    lea rsi, [buffer]        ; Buffer to store input
+    mov rdx, 4               ; Number of bytes to read
+    syscall
 
-    ror r10d, 4
-    xor r10d, [exclusive]
-    mov byte [input+2], r10b  ; Store third input character
+    ; Print "Plaintext result: "
+    mov rax, 1               ; syscall for write
+    mov rdi, 1               ; stdout handle
+    lea rsi, [result_msg]    ; Pointer to result message
+    mov rdx, result_msg_len  ; Length of the message
+    syscall
 
-    ror r11d, 4
-    xor r11d, [exclusive]
-    mov byte [input+3], r11b  ; Store fourth input character
+    ; Decrypt and print each byte
+    mov rax, r15
+    call decrypt_byte
+    call print_single_char
 
+    mov rax, r14
+    call decrypt_byte
+    call print_single_char
 
-    ; Print the characters
-    movzx eax, byte [input]
-    call print_char_32
+    mov rax, r13
+    call decrypt_byte
+    call print_single_char
 
-    movzx eax, byte [input+1]
-    call print_char_32
+    mov rax, r12
+    call decrypt_byte
+    call print_single_char
 
-    movzx eax, byte [input+2]
-    call print_char_32
+    ret
 
-    movzx eax, byte [input+3]
-    call print_char_32
-
-
-    ; ==========================
-    ; Do not modify anything below this line unless you know what you are doing
+decrypt_byte:
+    ror rax, 4               ; Rotate right by 4 bits
+    xor rax, [xor_key]       ; XOR with the key
+    and rax, 0xFF            ; Isolate the lowest byte
     ret
